@@ -187,6 +187,7 @@ Flask==2.2.1
 Flask-CacheBuster==1.0.0
 fonttools==4.34.4
 fuzzywuzzy==0.18.0
+gunicorn
 idna==3.3
 IMAPClient==2.1.0
 importlib-metadata==4.12.0
