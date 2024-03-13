@@ -342,4 +342,17 @@ def _show_page():
         return render_template('index.html', files=files)
 
 if __name__=="__main__":
-    app.run(port=8080, debug=False)
+     import os
+
+    # Check if we're running in a production environment (like Netlify)
+    if 'DYNO' in os.environ:
+        # Use Gunicorn to serve the app
+        from app import app
+        import sys
+
+        # Use the PORT environment variable provided by Netlify
+        port = int(os.environ.get('PORT', 8080))
+        app.run(host='0.0.0.0', port=port)
+    else:
+        # Run the app using Flask's development server
+        app.run(port=8080, debug=False)
