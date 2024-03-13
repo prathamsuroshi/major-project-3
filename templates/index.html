@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>CV Parser & Shortlister</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <script src="main.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script> -->
+
+  <style>
+    body{
+      color: white;
+            /* background-image: linear-gradient(60deg, #29323c 0%, #485563 100%); */
+      background-color: #0a0a0a;
+      list-style: none;
+      text-decoration: none;
+    }
+    .container-box {
+      border: 2px solid #0a0a0a;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+
+      background-color: #f3f3f3;
+      /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+      /* background-color: #0a0a0a; */
+      background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+
+      /* background-image: linear-gradient(to right, #434343 0%, black 100%); */
+    }
+
+    .navbar-dark .navbar-brand {
+      font-weight: bold;
+      color: white !important;
+      text-align: center;
+      /* width: 100%; */
+      margin: 0 auto;
+      /* Center the text */
+    }
+
+    .navbar-nav .go-back-button {
+      margin-right: 10px !important;
+    }
+
+    @media (max-width: 767.98px) {
+      .navbar {
+        padding: 0.5rem 1rem !important;
+        /* Adjust padding for smaller screens */
+      }
+
+      .navbar-brand {
+        font-size: 1.5rem !important;
+        /* Adjust font size for smaller screens */
+      }
+    }
+
+    @media (min-width: 768px) {
+
+      /* Adjust padding and margin for larger screens */
+      .navbar {
+        padding: 10px !important;
+        /* Adjust as needed */
+      }
+    }
+
+    /* file upload  */
+    .uploaded-files ul {
+      list-style: none;
+      /* Remove default list styles */
+      padding: 0;
+    }
+
+    .uploaded-files li {
+      display: flex;
+      /* Use flexbox for layout */
+      align-items: flex-end;
+      /* Align items vertically */
+      justify-content: space-between;
+      /* Add space between items */
+      margin-bottom: 10px;
+      /* Adjust the margin as needed */
+    }
+
+    .uploaded-files .name_file {
+      flex: 3;
+      /* Allow the link to grow and take available space */
+      margin-right: 10px;
+      /* Add spacing between file name and button */
+      text-decoration: none;
+      /* Remove default link decoration */
+    }
+
+    /* .uploaded-files .btn-danger {
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    /* font-size: 0.8rem; Adjust button font size */
+    /* width: 60px; */
+    /* } */
+    */ .uploaded-files .remove-button {
+      flex: 1;
+      flex-shrink: 0;
+      /* Prevent the button from shrinking */
+      width: 30px;
+      /* Set the desired width for the button */
+      padding: 5px 10px;
+    }
+
+    /* Loading overlay styles */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.7);
+      z-index: 1000;
+    }
+
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  
+          <!-- Loading overlay -->
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+          </div>
+
+          <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand">Resume Ranking</a>
+            <button class="btn btn-primary navbar-btn go-back-button" onclick="goBack()">
+              <span class="fa fa-arrow-left"></span> <!-- Bootstrap icon for left arrow -->
+            </button>
+          </nav>
+          <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button> -->
+
+          <!-- <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+
+    </ul>
+  </div> -->
+          <br />
+          <br />
+          <br />
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-md-6">
+                <div class="container-box">
+          <div class="container uploaded-files">
+
+
+            <form method=post enctype=multipart/form-data>
+              <h3>Upload Resumes</h3><br>
+              <input type=file name=file multiple>
+              <input type=submit value=Upload>
+              <input type="hidden" name="firstLoad" value="true">
+            </form>
+            <br />
+            {% if files %}
+            <h4>Uploaded Resumes</h4>
+
+            <ul>
+              {%- for code, file in files.items() %}
+              <li><a class="name_file" href="/download/{{ code }}">{{ file }}</a>
+                <a href="{{ url_for('remove_file', filename=code) }}" class="btn btn-danger btn-sm remove-button"
+                  role="button">Remove</a>
+              </li>
+
+              {% endfor %}
+            </ul>
+            <form method="POST" action="{{ url_for('remove_all_files') }}" id="clearAllForm">
+              <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Clear All</button>
+            </form>
+            {% endif %}
+            <br />
+
+            <form id="rankForm" method="POST" action="/process">
+              <div class="form-group">
+                <label>Enter Your Job Description</label>
+                <textarea type="text" rows="5" cols="5" class="form-control" name="rawtext"
+                  required="true">   </textarea>
+                <br />
+                <br />
+                <button type="reset" class="btn btn-primary"><i class="fa fa-eraser"></i> Clear</button>
+                <button type="submit" class="btn btn-info"><i class="fa fa-database"></i> Rank</button>
+
+              </div>
+            </form>
+          </div>
+
+          <div class="container">
+            <div class="alert alert-success" role="alert">
+              <p class="alert-heading">Result</p>
+              {% if files %}
+              {% if ranking %}
+              <a href="{{ url_for('process', filename='Candidates.csv' )}}">Download Candidates csv file</a>
+              {% else %}
+              No resumes ranked yet.
+              {% endif %}
+              {% else %}
+              No resumes uploaded.
+              {% endif %}
+            </div>
+
+            {% if ranking %}
+            <h4>Resume Ranking</h4>
+            <ul>
+              {% for rank_info in ranking %}
+              <li>
+                <a href="/download/{{ rank_info[0] }}">{{ rank_info[1] }}</a>
+                <span class="badge badge-secondary">{{ rank_info[2] }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <!-- <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          var firstLoad = document.getElementsByName("firstLoad")[0].value;
+          if (firstLoad === "true") {
+              document.getElementById("uploadForm").submit();
+          } else {
+      // If it's a reload, submit the "Clear All" form
+      setTimeout(function() {
+        document.getElementById("clearAllForm").submit();
+      }, 500);
+    }
+      });
+  </script> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var jobDescriptionTextarea = document.getElementsByName("rawtext")[0];
+      var rankButton = document.querySelector(".btn-info");
+      var loadingOverlay = document.getElementById("loadingOverlay");
+
+
+      // Use Jinja to set filesUploaded based on the presence of files
+      var filesUploaded = "{{ 'true' if files else 'false' }}";
+
+      function updateRankButton() {
+        var jobDescription = jobDescriptionTextarea.value.trim();
+
+        // Convert filesUploaded to a boolean value
+        var isFilesUploaded = filesUploaded === 'true';
+
+        rankButton.disabled = jobDescription === "" || !isFilesUploaded;
+      }
+
+      jobDescriptionTextarea.addEventListener("input", updateRankButton);
+
+      var rankForm = document.querySelector("#rankForm");
+
+      rankForm.addEventListener("submit", function (event) {
+        var jobDescription = jobDescriptionTextarea.value.trim();
+
+        if (jobDescription === "") {
+          // Prevent form submission if job description is empty
+          event.preventDefault();
+          alert("Please enter a job description.");
+        } else {
+          loadingOverlay.style.display = "block";
+        }
+      });
+
+      // Initial check on page load
+      updateRankButton();
+    });
+  </script>
+  <script>
+    // JavaScript function to go back
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
